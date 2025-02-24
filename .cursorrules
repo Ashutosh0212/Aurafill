@@ -1,0 +1,92 @@
+{
+    "projectStructure": {
+        "root": {
+            "src/": {
+                "app.py": "Main Streamlit application file",
+                "utils/": {
+                    "db_utils.py": "Vector database utilities and connections",
+                    "llm_utils.py": "LLM model utilities and configurations",
+                    "embeddings.py": "Embedding model utilities"
+                },
+                "config/": {
+                    "config.py": "Configuration settings",
+                    "models_config.yaml": "Model configurations"
+                }
+            },
+            "requirements.txt": "Project dependencies",
+            "README.md": "Project documentation"
+        }
+    },
+    "dependencies": [
+        "streamlit",
+        "langchain",
+        "chromadb",
+        "faiss-cpu",
+        "qdrant-client",
+        "python-dotenv"
+    ],
+    "linting": {
+        "python": {
+            "max_line_length": 100,
+            "indent_size": 4
+        }
+    },
+    "vectorDatabases": [
+        "ChromaDB",
+        "FAISS",
+        "Qdrant"
+    ],
+    "llmModels": {
+        "embedding": "nomic-embed-text",
+        "contextProcessor": "llama3.2",
+        "queryProcessor": [
+            "mistral",
+            "deepseek-r1:8b"
+        ]
+    },
+    "workflow": {
+        "steps": [
+            "User selects Vector DB",
+            "User uploads or inputs text data",
+            "nomic-embed-text creates embeddings",
+            "Store embeddings in selected Vector DB",
+            "User inputs query",
+            "Retrieve relevant context from Vector DB",
+            "Process context and query with selected LLM model",
+            "Display results"
+        ]
+    },
+    "naming": {
+        "classes": "PascalCase",
+        "functions": "snake_case",
+        "variables": "snake_case",
+        "constants": "UPPER_SNAKE_CASE"
+    },
+    "documentation": {
+        "required": true,
+        "style": "Google docstring format",
+        "components": [
+            "Function descriptions",
+            "Parameter descriptions",
+            "Return value descriptions",
+            "Usage examples"
+        ]
+    },
+    "testing": {
+        "framework": "pytest",
+        "coverage": {
+            "minimum": 80,
+            "excludes": [
+                "tests/*",
+                "setup.py"
+            ]
+        }
+    },
+    "security": {
+        "requirements": [
+            "Environment variables for sensitive data",
+            "Input validation",
+            "Error handling"
+        ]
+    }
+} 

@@ -1,0 +1,3 @@
+{"event": "processing_step", "timestamp": "2025-02-23T03:06:12.346358", "query": null, "step": "document_retrieval", "duration": 2.1046390533447266, "input": "{'query': 'who is speaking'}", "output": "{'num_docs': 1}"}
+{"event": "processing_step", "timestamp": "2025-02-23T03:06:42.351179", "query": null, "step": "content_extraction_total", "duration": 30.004821062088013, "input": "{'query': 'who is speaking', 'num_documents': 1, 'num_batches': 1}", "output": "{'content_length': 46}"}
+{"event": "processing_step", "timestamp": "2025-02-23T03:06:43.066631", "query": null, "step": "error", "input": "{'query': 'who is speaking'}", "error": "object of type 'AIMessage' has no len()"}
