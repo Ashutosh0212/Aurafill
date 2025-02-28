@@ -1,3 +1,0 @@
-{"event": "processing_step", "timestamp": "2025-02-23T03:03:43.785999", "query": null, "step": "document_retrieval", "duration": 2.1037099361419678, "input": "{'query': 'is the error'}", "output": "{'num_docs': 1}"}
-{"event": "processing_step", "timestamp": "2025-02-23T03:04:13.798939", "query": null, "step": "content_extraction_total", "duration": 30.01293969154358, "input": "{'query': 'is the error', 'num_documents': 1, 'num_batches': 1}", "output": "{'content_length': 46}"}
-{"event": "processing_step", "timestamp": "2025-02-23T03:04:14.537548", "query": null, "step": "error", "input": "{'query': 'is the error'}", "error": "type object 'Queue' has no attribute 'Full'"}
