@@ -5,16 +5,12 @@ This module contains predefined user credentials and authentication utilities.
 
 # Predefined users with their roles and credentials
 USERS = {
-    "admin": {
-        "password": "admin123",  # You should change this to a secure password
-        "role": "admin"
-    },
-    "user1": {
-        "password": "user123",  # You should change this to a secure password
+    "sumitk": {
+        "password": "sumitk2024",  # You should change this to a secure password
         "role": "user"
     },
-    "user2": {
-        "password": "user456",  # You should change this to a secure password
+    "": {
+        "password": "",  # You should change this to a secure password
         "role": "user"
     }
 }

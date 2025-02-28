@@ -29,7 +29,7 @@ DB_PERSIST_DIR.mkdir(parents=True, exist_ok=True)
 # Model configurations
 EMBEDDING_MODEL = "nomic-embed-text"
 CONTEXT_MODEL = "llama3.2"
-QUERY_MODELS: List[str] = ["mistral", "deepseek-r1:8b", "gpt-3.5-turbo"]
+QUERY_MODELS: List[str] = ["mistral", "deepseek-r1:8b", "llama3.2:latest", "deepseek-r1:70b","gpt-3.5-turbo"]
 
 # Ollama API configuration
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -39,7 +39,7 @@ QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 
 # Application settings
-MAX_TEXT_LENGTH = 10000
+MAX_TEXT_LENGTH = 30000
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 TOP_K_RESULTS = 4
@@ -58,6 +58,10 @@ MODEL_CONFIG = {
             "max_tokens": 2048
         },
         "deepseek-r1:8b": {
+            "temperature": 0.7,
+            "max_tokens": 2048
+        },
+        "deepseek-r1:70b": {
             "temperature": 0.7,
             "max_tokens": 2048
         },

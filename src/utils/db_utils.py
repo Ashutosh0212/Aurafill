@@ -17,7 +17,9 @@ from src.config.config import (
     DB_PERSIST_DIR,
     QDRANT_URL,
     QDRANT_API_KEY,
-    MODEL_CONFIG
+    MODEL_CONFIG,
+    CHUNK_SIZE,
+    CHUNK_OVERLAP
 )
 
 def sanitize_collection_name(name: str) -> str:
@@ -99,7 +101,7 @@ class VectorDBBase(ABC):
         
         # Get total number of documents
         total_docs = len(self.vectorstore.get()) if hasattr(self.vectorstore, 'get') else TOP_K_RESULTS
-        
+        TOP_K_RESULTS = 1
         # Ensure k doesn't exceed total documents
         if 'k' in search_kwargs:
             search_kwargs['k'] = min(search_kwargs['k'], total_docs) if total_docs > 0 else search_kwargs['k']
@@ -199,33 +201,49 @@ class FAISSManager(VectorDBBase):
         return [d.name for d in base_dir.iterdir() if d.is_dir() and (d / "index.faiss").exists()]
 
 def get_available_databases() -> List[str]:
-    """Get a list of all available vector databases.
-
-    Returns:
-        List of database names.
-    """
+    """Get a list of all available vector databases."""
+    # Check direct ChromaDB directories
     collections = set()
-    collections.update(ChromaDBManager.list_collections())
-    collections.update(FAISSManager.list_collections())
+    
+    # Look for databases in the main persist directory
+    if DB_PERSIST_DIR.exists():
+        for path in DB_PERSIST_DIR.iterdir():
+            if path.is_dir() and (path / "chroma.sqlite3").exists():
+                # Get original name by reversing sanitization if possible
+                collections.add(path.name)
+    
+    # Also check legacy locations if they exist
+    if (DB_PERSIST_DIR / "chroma").exists():
+        collections.update(ChromaDBManager.list_collections())
+    if (DB_PERSIST_DIR / "faiss").exists():
+        collections.update(FAISSManager.list_collections())
+    
     return sorted(list(collections))
 
-def get_vectordb(collection_name: str, embedding_model: OllamaEmbeddings) -> VectorDBBase:
-    """Get a vector database instance by collection name.
-
-    Args:
-        collection_name: Name of the collection to load.
-        embedding_model: Embedding model to use.
-
-    Returns:
-        Vector database instance.
-    """
-    # Try ChromaDB first
-    if (DB_PERSIST_DIR / "chroma" / sanitize_collection_name(collection_name)).exists():
-        return ChromaDBManager(embedding_model, collection_name)
+def get_vectordb(name: str, embeddings: Any) -> Any:
+    """Get or create a ChromaDB vector store."""
+    # Sanitize the collection name first
+    sanitized_name = sanitize_collection_name(name)
     
-    # Try FAISS next
-    if (DB_PERSIST_DIR / "faiss" / sanitize_collection_name(collection_name)).exists():
-        return FAISSManager(embedding_model, collection_name)
-    
-    # Default to ChromaDB for new collections
-    return ChromaDBManager(embedding_model, collection_name) 
+    # Create a persist directory for this specific database
+    persist_dir = DB_PERSIST_DIR / sanitized_name
+    persist_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        # Create or load ChromaDB
+        vectordb = Chroma(
+            persist_directory=str(persist_dir),
+            embedding_function=embeddings,
+            collection_name=sanitized_name,
+            collection_metadata={
+                "distance_function": "cosine"
+            }
+        )
+        
+        # Ensure the database is persisted
+        vectordb.persist()
+        return vectordb
+        
+    except Exception as e:
+        print(f"Error creating/loading vector database: {str(e)}")
+        raise 
